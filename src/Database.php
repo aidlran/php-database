@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 	namespace aidlo;
 
@@ -86,4 +86,97 @@
 		public function get_connection(): ?PDO {
 			return $this->active ? $this->connection : null;
 		}
+
+
+		/*
+		 * Get an array of all possible enum values from a table column.
+		 *
+		 * WARNING: Untested
+		 * WARNING: NOT SAFE FROM SQL INJECTION
+		 *
+		 * FIXME
+		 *
+		 * @param string $table Name of the table.
+		 * @param string $column Name of the column.
+		 * @return string[]|null
+		 /
+		public function getEnumValues(string $table, string $column): ?array {
+
+			// Ensure connection was initialised
+			if (!$this->get_connection())
+				return null;
+
+			// Query
+			try {
+				if (($a = $this->connection->prepare("SHOW COLUMNS FROM `$table` LIKE '$column'"))
+					&& $a->execute()
+					&& ($a = $a->fetch())
+					&& isset($a['Type']))
+				{
+					$a = $a['Type'];
+					preg_match('/enum\((.*)\)$/', $a, $a);
+					$a = explode(',', $a[1]);
+					foreach ($a as &$b)
+						$b = substr($b, 1, -1);
+					return $a;
+				}
+			} catch (Exception) {return null;}
+			return null;
+		}
+
+		private static function generate_select_clause(array $columns): ?string
+		{
+			$string = 'SELECT';
+			$once = false;
+			$increment = 0;
+
+			foreach ($columns as $key => $value)
+			{
+				$substring = $once ? ', ' : ' ';
+
+				if ($key == $increment)
+					$increment++;
+				else if (preg_match(self::REGEX_COLUMN, $key))
+					$substring .= "$key AS ";
+				else continue;
+
+				if (preg_match(self::REGEX_COLUMN, $value)) {
+					$string .= $substring . $value;
+					$once = true;
+				}
+			}
+
+			return $once ? $string : null;
+		}
+
+		/**
+		 * TODO: joins
+		 * TODO: where clause
+		 * TODO: order by
+		 * @param string[] $select_columns
+		 * @param string|string[] $table
+		 * @param array|null $other_parameters Optional parameters e.g. ['limit' => int]
+		 * @return PDOStatement|false
+		 /
+		public function select(array $select_columns, string|array $table, array $other_parameters = null): PDOStatement|false
+		{
+			if (!$this->get_connection() || !($select_clause = self::generate_select_clause($select_columns)) || (is_string($table) && !preg_match(self::REGEX_TABLE, $table)))
+				return false;
+
+			if (is_array($table))
+				foreach ($table as $key => $value) {
+					if (preg_match(self::REGEX_TABLE, "$key$value"))
+						$table = "$key AS $value";
+					else return false;
+					break;
+				}
+
+			$query = "$select_clause FROM $table";
+
+			if (preg_match('/^\d+$/', $other_parameters['limit']) && $other_parameters['limit'] > 0)
+				$query .= ' LIMIT ' . $other_parameters['limit'];
+
+			return $this->get_connection()->query($query);
+		}
+		*/
 	}
