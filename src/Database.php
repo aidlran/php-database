@@ -28,7 +28,7 @@
 		 * @param string $db_name The name of the desired database.
 		 * @return Database An instance of this class.
 		 */
-		public static function get_db(string $host, string $username, string $password, string $db_name): Database {
+		public static function getDb(string $host, string $username, string $password, string $db_name): Database {
 			return Database::$databases[$db_name] ?? self::$databases[$db_name] = new Database($host, $username, $password, $db_name);
 		}
 
@@ -41,8 +41,8 @@
 		 * @param string $db_name The name of the desired database.
 		 * @return PDO|null Returns the PDO object or NULL if initialisation failed.
 		 */
-		public static function get_pdo(string $host, string $username, string $password, string $db_name): ?PDO {
-			return Database::get_db($host, $username, $password, $db_name)->get_connection();
+		public static function getPdo(string $host, string $username, string $password, string $db_name): ?PDO {
+			return Database::getDb($host, $username, $password, $db_name)->getConnection();
 		}
 
 		/**
@@ -83,7 +83,7 @@
 		 * Retrieve the PDO object for this database.
 		 * @return PDO|null Returns the PDO object or NULL if initialisation failed.
 		 */
-		public function get_connection(): ?PDO {
+		public function getConnection(): ?PDO {
 			return $this->active ? $this->connection : null;
 		}
 

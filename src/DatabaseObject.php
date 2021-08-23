@@ -38,7 +38,7 @@
 		 * @param string $key The key for the data.
 		 * @return string|null Returns the string or NULL if it is not set or if it is an empty string.
 		 */
-		protected function get_string(string $key): ?string {
+		protected function getString(string $key): ?string {
 			return $this->data[$key] == '' ? null : $this->data[$key];
 		}
 
@@ -48,7 +48,7 @@
 		 * @return DateTime|null Returns the date as a DateTime object or NULL if it is not set or if an exception
 		 * occurs.
 		 */
-		protected function get_date(string $key): ?DateTime {
+		protected function getDate(string $key): ?DateTime {
 			try {
 				return ($d = $this->data[$key]) ? new DateTime($d) : null;
 			}
